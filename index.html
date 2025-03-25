@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <title>Sensör Paneli</title>
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+
+  <!-- Firebase SDK (v8) -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Inter', sans-serif;
+      background: #f4f7fb;
+      color: #333;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 40px 20px;
+    }
+
+    h1 {
+      margin-bottom: 30px;
+      font-weight: 600;
+      color: #222;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+      width: 100%;
+      max-width: 800px;
+    }
+
+    .card {
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+      transition: 0.3s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+    }
+
+    .sensor-label {
+      font-size: 16px;
+      font-weight: 500;
+      color: #666;
+    }
+
+    .sensor-value {
+      font-size: 28px;
+      font-weight: 600;
+      margin-top: 10px;
+      color: #111;
+    }
+
+    .change-count {
+      margin-top: 6px;
+      font-size: 14px;
+      color: #888;
+    }
+  </style>
+</head>
+<body>
+  <h1>Anlık Sensör Paneli</h1>
+  <div class="grid">
+    <div class="card" id="sensor1Card">
+      <div class="sensor-label">Sensör 1</div>
+      <div class="sensor-value" id="sensor1Val">-</div>
+      <div class="change-count" id="sensor1Count">Değişim: -</div>
+    </div>
+    <div class="card" id="sensor2Card">
+      <div class="sensor-label">Sensör 2</div>
+      <div class="sensor-value" id="sensor2Val">-</div>
+      <div class="change-count" id="sensor2Count">Değişim: -</div>
+    </div>
+    <div class="card" id="sensor3Card">
+      <div class="sensor-label">Sensör 3</div>
+      <div class="sensor-value" id="sensor3Val">-</div>
+      <div class="change-count" id="sensor3Count">Değişim: -</div>
+    </div>
+    <div class="card" id="sensor4Card">
+      <div class="sensor-label">Sensör 4</div>
+      <div class="sensor-value" id="sensor4Val">-</div>
+      <div class="change-count" id="sensor4Count">Değişim: -</div>
+    </div>
+  </div>
+
+  <script>
+    var firebaseConfig = {
+      apiKey: "AIzaSyAcyntoYpdy9qoF7CeLznQdHjFfJqt8lec",
+      authDomain: "sowec-database.firebaseapp.com",
+      databaseURL: "https://sowec-database-default-rtdb.europe-west1.firebasedatabase.app",
+      projectId: "sowec-database",
+      storageBucket: "sowec-database.firebasestorage.app",
+      messagingSenderId: "114589657879",
+      appId: "1:114589657879:web:5771be91c34cb042cfa552"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    var database = firebase.database();
+
+    var sensorRef = database.ref("sensorData");
+
+    sensorRef.on("value", function(snapshot) {
+      var data = snapshot.val();
+      if (data) {
+        for (let i = 1; i <= 4; i++) {
+          document.getElementById(`sensor${i}Val`).textContent = data[`sensor${i}`]?.value ?? '-';
+          document.getElementById(`sensor${i}Count`).textContent = `Değişim: ${data[`sensor${i}`]?.changeCount ?? '-'}`;
+        }
+      }
+    });
+  </script>
+</body>
+</html>
