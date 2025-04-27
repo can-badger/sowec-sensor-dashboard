@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="tr">
 <head>
@@ -67,12 +68,6 @@
       margin-top: 10px;
       color: #111;
     }
-
-    .change-count {
-      margin-top: 6px;
-      font-size: 14px;
-      color: #888;
-    }
   </style>
 </head>
 <body>
@@ -81,22 +76,22 @@
     <div class="card" id="sensor1Card">
       <div class="sensor-label">Sensör 1</div>
       <div class="sensor-value" id="sensor1Val">-</div>
-      <div class="change-count" id="sensor1Count">Değişim: -</div>
     </div>
     <div class="card" id="sensor2Card">
       <div class="sensor-label">Sensör 2</div>
       <div class="sensor-value" id="sensor2Val">-</div>
-      <div class="change-count" id="sensor2Count">Değişim: -</div>
     </div>
     <div class="card" id="sensor3Card">
       <div class="sensor-label">Sensör 3</div>
       <div class="sensor-value" id="sensor3Val">-</div>
-      <div class="change-count" id="sensor3Count">Değişim: -</div>
     </div>
     <div class="card" id="sensor4Card">
       <div class="sensor-label">Sensör 4</div>
       <div class="sensor-value" id="sensor4Val">-</div>
-      <div class="change-count" id="sensor4Count">Değişim: -</div>
+    </div>
+    <div class="card" id="lastSeenCard">
+      <div class="sensor-label">Son Görülme</div>
+      <div class="sensor-value" id="lastSeenVal">-</div>
     </div>
   </div>
 
@@ -114,15 +109,15 @@
     firebase.initializeApp(firebaseConfig);
     var database = firebase.database();
 
-    var sensorRef = database.ref("sensorData");
+    var statusRef = database.ref("status");
 
-    sensorRef.on("value", function(snapshot) {
+    statusRef.on("value", function(snapshot) {
       var data = snapshot.val();
       if (data) {
         for (let i = 1; i <= 4; i++) {
-          document.getElementById(`sensor${i}Val`).textContent = data[`sensor${i}`]?.value ?? '-';
-          document.getElementById(`sensor${i}Count`).textContent = `Değişim: ${data[`sensor${i}`]?.changeCount ?? '-'}`;
+          document.getElementById(`sensor${i}Val`).textContent = data[`sensor${i}`]?.count ?? '-';
         }
+        document.getElementById("lastSeenVal").textContent = data.lastSeen ?? '-';
       }
     });
   </script>
